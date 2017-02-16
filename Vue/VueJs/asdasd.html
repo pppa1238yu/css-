@@ -1,0 +1,981 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<html>
+<head>
+  <link href="./css/bootstrap-table.min.css"/>
+  <link href="./css/bootstrap-switch.min.css"/>
+  <link href="./css/bootstrap.min.css"/>
+  <link href="./css/style.css"/>
+  <script src="./jquery-1.12.4.js" charset="utf-8"></script>
+  <script src="./js/bootstrap-table.min.js"/></script>
+  <script src="./js/bootstrap-table-zh-CN.min.js"/></script>
+  <script src="./js/jquery.validate.js"/></script>
+  <script src="./js/jquery.validate.messages_cn.js"/></script>
+  <script src="./js/bootstrap-switch.min.js"/></script>
+<link href="css/bootstrap-datetimepicker.min.css" type="text/css"
+	rel="stylesheet" />
+<style type="text/css">
+.width {
+	width: 10%;
+}
+</style>
+</head>
+<body>
+	<div class="modal fade" id="showeduList" data-backdrop="static"
+		tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true">
+		<form class="form-horizontal registerform-2" role="form"
+			id="freezeUser">
+			<div class="modal-dialog" style="width: 800px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<p>
+							<span>教育经历</span>
+						</p>
+
+					</div>
+
+					<div class="modal-body" style="height: 500px; overflow-y: scroll;">
+						<table id="eduList" data-url="team/query/show"
+							data-pagination="true" data-query-params="search1"
+							data-page-list="[10, 20, 50, 100]" data-side-pagination="server"
+							data-show-refresh="true" data-show-toggle="true" class="linenums"
+							data-method="post"
+							data-content-type="application/x-www-form-urlencoded">
+							<thead>
+								<tr>
+									<th data-field="id" data-align="center">Id</th>
+									<th data-field="beginDateText" data-align="center">开始时间</th>
+									<th data-field="endDateText" data-align="center">结束时间</th>
+									<th data-field="school" data-align="center">学校</th>
+									<th data-field="course" data-align="center">专业</th>
+									<th data-field="levelText" data-align="center">学历</th>
+									<th data-align="center" data-field="operate"
+										data-formatter="operateFormatter1"
+										data-events="operateEvents1">管理</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+					<div class="modal-footer" style="text-align: center;">
+						<utouu-ams:permission has="TEAM_LIST" type="button" text="添加"
+							id="createEdu" className="btn btn-primary " style="margin-top: 7px;"
+							extensions="data-toggle=\"modal\" data-target=\"#add\"" />
+						<utouu-ams:permission has="TEAM_LIST" type="button" text="取消"
+							id="close" className="btn btn-default" style="margin-top: 7px;" />
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	<!--修改  -->
+	<div class="modal fade" id="updateTeams" data-backdrop="static"
+		tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true">
+		<form class="form-horizontal registerform-2" role="form"
+			id="updateTeam">
+			<div class="modal-dialog" style="width: 500px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<p>
+							<span>修改</span>
+						</p>
+
+					</div>
+
+					<div class="modal-body" style="height: 400px; overflow-y: scroll;">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">名称：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<input type="text" class="form-control" name="name" id="names">
+								<input type="hidden" class="form-control" name="id" id="pid">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">职位：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<input type="text" class="form-control" name="post" id="posts">
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">角色：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+
+								<select name="role" id=roles>
+									<option value="1">创始人</option>
+									<option value="2">联合创始人</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">头像：</label>
+							<div class="col-sm-9">
+								<img style="width: 60px; height: 60px" src="" id="fu_pic7" /> <input
+									onChange="fileChange(this,7)" value="" name="file"
+									id="uploadOneImg7" type="file"> <input type="hidden"
+									id="u7" name="photo" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">个人理念：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<textarea class="form-control" rows="2" maxlength="100" cols="50"
+									name="brief" id="brief"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">介绍：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<textarea class="form-control" rows="2" cols="50" maxlength="250"
+								name="description" id="description"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer" style="text-align: center;">
+						<button type="submit" class="btn btn-primary">确定</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!--展现工作经验  -->
+	<div class="modal fade" id="showperList" data-backdrop="static"
+		tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true">
+		<form class="form-horizontal registerform-2" role="form"
+			id="freezeUser">
+			<div class="modal-dialog" style="width: 800px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<p>
+							<span>工作经历</span>
+						</p>
+
+					</div>
+
+					<div class="modal-body" style="height: 500px; overflow-y: scroll;">
+						<table id="perList" data-url="team/query/showper"
+							data-pagination="true" data-query-params="search2"
+							data-page-list="[20, 30, 50, 100]"
+ 	data-page-size="20"  data-method="post"
+							data-content-type="application/x-www-form-urlencoded"
+							data-side-pagination="server" data-show-refresh="true"
+							data-show-toggle="true" class="linenums">
+							<thead>
+
+								<tr>
+									<th data-field="id" data-align="center">编号</th>
+									<th data-field="beginDateText" data-align="center">开始时间</th>
+									<th data-field="endDateText" data-align="center">结束时间</th>
+									<th data-field="company" data-align="center">公司</th>
+									<th data-field="role" data-align="center">角色</th>
+									<th data-align="center" data-field="operate"
+										data-formatter="operateFormatter2"
+										data-events="operateEvents2">管理</th>
+								</tr>
+
+							</thead>
+						</table>
+					</div>
+				   <div class="modal-footer" style="text-align: center;">
+              <utouu-ams:permission has="TEAM_LIST" type="button" text="添加"
+							id="createPer" className="btn btn-primary "
+							extensions="data-toggle=\"modal\" data-target=\"#addto\"" />
+            <button type="button" class="btn btn-default" style="margin-top: 7px;" data-dismiss="modal">
+            	关闭
+            </button>
+         </div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- 添加经学历-->
+	<div class="modal fade" id="add" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<form class="form-horizontal registerform-2" role="form" id="add_Form">
+			<div class="modal-dialog" style="width: 550px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<label>添加教育</label>
+					</div>
+					<div class="modal-body" id="payCountDiv">
+						<input type="hidden" name="userId" id="userid">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">学校：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<input type="text" class="form-control" id="name" name="school">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">专业：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<input type="text" class="form-control" name="course">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">学历：</label> <select
+								name="levelText">
+								<c:forEach items="${education }" var="e">
+									<option value="${e.value }">${e.name }</option>
+
+								</c:forEach>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">开始时间</label>
+							<div class="col-sm-9" style="margin-left: -18px" >
+								<div class="input-group date form_date start"
+									id="searchStartDatePicker"
+									data-date-format="yyyy-mm-dd hh:ii:00"
+									data-link-field="searchBeginDate"
+									data-link-format="yyyy-mm-dd hh:ii:00">
+									<input name="sdate" id="startDate" class="form-control" type="text" style="width: 250px;"
+										readonly> <span class="input-group-addon"><span
+										class="glyphicon glyphicon-remove"></span></span> <span
+										class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="searchBeginDate" name="beginDateTexts" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">结束时间</label>
+							<div class="col-sm-9" style="margin-left: -18px" >
+								<div class="input-group date form_date end"
+									id="searchEndDatePicker"
+									data-date-format="yyyy-mm-dd hh:ii:00"
+									data-link-field="searchEndDate"
+									data-link-format="yyyy-mm-dd hh:ii:00">
+									<input name="edate" id="endDate" class="form-control" type="text" style="width: 250px;"
+										readonly> <span class="input-group-addon"><span
+										class="glyphicon glyphicon-remove"></span></span> <span
+										class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="searchEndDate" name="endDateTexts" />
+							</div>
+						</div>
+
+
+
+					</div>
+
+					<div class="modal-footer" style="text-align: center;">
+
+						<button type="submit" class="btn btn-primary">确定</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	<!-- 添加经验 -->
+	<div class="modal fade" id="addto" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<form class="form-horizontal registerform-2" role="form" id="Formto">
+			<div class="modal-dialog" style="width: 550px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<label>工作经历</label>
+					</div>
+					<div class="modal-body" >
+						<input type="hidden" name="userId" id="userids">
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">职位：</label>
+							<div class="col-sm-9" style="margin-left: -18px">
+								<input type="text" class="form-control" name="role" id="role">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">公司：</label> <input
+								type="text" class="form-control" name="company" id="teambean"/>
+
+						</div>
+
+
+
+
+						<div class="form-group">
+							<label class="col-sm-3 control-label">开始时间</label>
+							<div class="col-sm-9" style="margin-left: -18px" >
+								<div class="input-group date form_date start"
+									id="searchStartDatePicker1"
+									data-date-format="yyyy-mm-dd hh:ii:00"
+									data-link-field="searchBeginDates"
+									data-link-format="yyyy-mm-dd hh:ii:00">
+									<input id="sdate" class="form-control" type="text" style="width: 250px;"
+										readonly> <span class="input-group-addon"><span
+										class="glyphicon glyphicon-remove"></span></span> <span
+										class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="searchBeginDates" name="beginDateTexts" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">结束时间</label>
+							<div class="col-sm-9" style="margin-left: -18px" >
+								<div class="input-group date form_date end"
+									id="searchEndDatePicker1"
+									data-date-format="yyyy-mm-dd hh:ii:00"
+									data-link-field="searchEndDates"
+									data-link-format="yyyy-mm-dd hh:ii:00">
+									<input id="edate" class="form-control" type="text" style="width: 250px;"
+										readonly> <span class="input-group-addon"><span
+										class="glyphicon glyphicon-remove"></span></span> <span
+										class="input-group-addon"><span
+										class="glyphicon glyphicon-calendar"></span></span>
+								</div>
+								<input type="hidden" id="searchEndDates" name="endDateTexts" />
+							</div>
+						</div>
+
+
+
+
+					</div>
+
+					<div class="modal-footer" style="text-align: center;">
+						<button type="button" class="btn btn-primary" id="adduserexp">保存</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	<div id="teambean-toolbar">
+		<div class="form-inline" role="form">
+			&nbsp;
+			<div class="form-group">
+				<label>公司:</label> <select id="teambeanId" name="teambeanId"
+					class="form-control">
+					<option value="">请选择</option>
+					<c:forEach items="${company }" var="t">
+						<option value="${t.value }">${t.name }</option>
+					</c:forEach>
+				</select>
+			</div>
+			&nbsp;
+			<utouu-ams:permission has="TEAM_QUERY" type="button" text="查 询 "
+				className="btn btn-primary" id="search" />
+		</div>
+	</div>
+
+	<div>
+		<table id="edu_list_table" data-url="team/query"
+			data-pagination="true" data-query-params="search"
+			data-toolbar="#teambean-toolbar" data-page-list="[10, 20, 50, 100]"
+			data-side-pagination="server" data-show-refresh="true"
+			data-show-toggle="true" class="linenums">
+			<thead>
+				<tr>
+					<th data-field="id" data-align="center">编号</th>
+					<th data-field="name" data-align="center">名称</th>
+					<th data-field="post" data-align="center">职位</th>
+					<th data-field="companyName" data-align="center">公司</th>
+					<th data-field="roleText" data-align="center">角色</th>
+
+					<th data-align="center" data-field="operate"
+						data-formatter="operateFormatter" data-events="operateEvents">管理</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+
+
+
+
+<script src="./jquery-1.12.4.js" charset="utf-8"></script>
+	<script type="text/javascript">
+
+
+
+	function fileChange(obj,num){
+		 var dataForm = new FormData();
+		 var no = "#fu_pic"+num;
+		 var delete_pic = $(no).attr("src");
+		 dataForm.append("deletePic",delete_pic);
+		 dataForm.append("file",$(obj)[0].files[0]);
+		 dataForm.append("type",1);
+		 $.ajax({
+			 url:'space/upload-logo',
+			 type:"post",
+			 cache: false,
+			 contentType: false,    //不可缺
+		     processData: false,
+			 data:dataForm,
+			 dateType:'json',
+			 success:function(data){
+				 if(data.success){
+					var picId="#fu_pic"+num;
+					var im="#u"+num;
+					$(picId).attr("src",data.url);
+					$(im).val(data.fileName);
+				 }else{
+				 }
+			 },
+			 error:function(XMLHttpRequest,status){
+				 if(status=='timeout'){
+					 alert("连接超时！","error");
+				 }else{
+					 alert("系统异常！","error");
+				 }
+			 }
+		 });
+	}
+
+
+
+		//操作自定义
+		function operateFormatter(value, row, index) {
+			return [/* '<utouu-ams:permission has="SPACE_MNG" type="a" text="删除" id="URL_LIST'+index+'" className="btn btn-primary ubtn deleteUrl" href="javascript:void(0);" />'
+																											            , */'&nbsp;&nbsp;<utouu-ams:permission has="TEAM_ADD" type="a" text="添加教育经历"   href="javascript:void(0);" id="URL_LIST'
+					+ index
+					+ '"  className="btn btn-primary ubtn addEdus"  extensions="data-toggle=\"modal\" data-target=\"#showeduList\""/>'
+					+ '&nbsp;&nbsp;<utouu-ams:permission has="TEAM_ADD" type="a" text="添加工作经历" href="javascript:void(0);" id="URL_LIST'
+					+ index
+					+ '" className="btn btn-primary ubtn addPer" extensions="data-toggle=\"modal\" data-target=\"#showperList\""/>'+'&nbsp;&nbsp;<utouu-ams:permission has="TEAM_ADD" type="a" text="修改"   href="javascript:void(0);" id="URL_LIST'
+					+ index + '"  className="btn btn-primary ubtn updateteam"  />'  ]
+		}
+
+		function operateFormatter1(value, row, index) {
+			return [/* '<utouu-ams:permission has="SPACE_MNG" type="a" text="删除" id="URL_LIST'+index+'" className="btn btn-primary ubtn deleteUrl" href="javascript:void(0);" />'
+																											            , */'&nbsp;&nbsp;<utouu-ams:permission has="TEAM_ADD" type="a" text="删除"   href="javascript:void(0);" id="URL_LIST'
+					+ index + '"  className="btn btn-primary ubtn delEdu"  />' ]
+		}
+
+		function operateFormatter2(value, row, index) {
+			return [/* '<utouu-ams:permission has="SPACE_MNG" type="a" text="删除" id="URL_LIST'+index+'" className="btn btn-primary ubtn deleteUrl" href="javascript:void(0);" />'
+																											            , */'&nbsp;&nbsp;<utouu-ams:permission has="TEAM_ADD" type="a" text="删除"   href="javascript:void(0);" id="URL_LIST'
+					+ index + '"  className="btn btn-primary ubtn delPer"  />' ]
+		}
+		$("#close").click(function() {
+
+			$("#showeduList").modal('hide');
+
+		});
+		$("#closeto").click(function() {
+
+			$("#showperList").modal('hide');
+
+		});
+		var userid;
+		var block;
+
+		window.operateEvents = {
+
+			'click .addEdus' : function(e, value, row, index) {
+				userid = row.id;
+				$("#userid").val(row.id);
+				block = $("#eduList").bootstrapTable();
+				block.bootstrapTable('refresh');
+
+			},
+			'click .addPer' : function(e, value, row, index) {
+				userid = row.id;
+				$("#userids").val(row.id);
+				block = $("#perList").bootstrapTable();
+				block.bootstrapTable('refresh');
+
+			},
+			'click .updateteam' : function(e, value, row, index) {
+				//$("#roles").val(row.role);
+				$("#pid").val(row.id);
+				$("#names").val(row.name);
+				$("#posts").val(row.post);
+				$("#u7").val(row.photo);
+				$("#fu_pic7").attr("src",row.picText);
+				var role = row.role;
+				$("#roles").find("option[value="+role+"]").attr("selected","selected");
+				// TODO
+				$("#brief").val(row.brief);
+				$("#description").val(row.description);
+				$("#updateTeams").modal('show');
+
+			}
+
+		};
+		window.operateEvents1 = {
+			'click .delEdu' : function(e, value, row, index) {
+
+				$.ajax({
+					url : 'team/deleteEdu',
+					type : 'post',
+					data : {
+						id : row.id
+					},
+					dataType : 'json',
+					success : function(data) {
+						alert("删除成功");
+						block.bootstrapTable('refresh');
+					},
+					error : function(xhq, statusText, eth) {
+						if ('timeout' == statusText) {
+							alert("请求，请稍后再试！");
+		} else {
+							alert('系统异常');
+						}
+					}
+				});
+			}
+
+		};
+
+		window.operateEvents2 = {
+			'click .delPer' : function(e, value, row, index) {
+
+				$.ajax({
+					url : 'team/deletePer',
+					type : 'post',
+					data : {
+						id : row.id
+					},
+					dataType : 'json',
+					success : function(data) {
+						alert("删除成功");
+						block.bootstrapTable('refresh');
+					},
+					error : function(xhq, statusText, eth) {
+						if ('timeout' == statusText) {
+							alert("请求，请稍后再试！");
+						} else {
+							alert('系统异常');
+						}
+					}
+				});
+			}
+
+		};
+
+		$("#createEdu").click(function() {
+			console.log($("#add_Form")[0]);
+			$("#add_Form")[0].reset();
+		});
+		$("#createPer").click(function() {
+			$("#Formto")[0].reset();
+		});
+
+
+		$("#adduserexp").click(function(){
+			var flags=true;
+			if($("#role").val()=="" ){
+				alert("职位不能为空");
+				flags=false;
+
+			}
+			if($("#teambean").val()==""){
+				alert("公司不能为空");
+				flags=false;
+			}
+			if($("#sdate").val()==""){
+				alert("开始时间不能为空");
+				flags=false;
+
+			}
+			if($("#edate").val()==""){
+				alert("结束时间不能为空");
+				flags=false;
+
+			}
+			if(flags){$.ajax({
+
+				url : '/team/create/adduserexperience',
+				data : $("#Formto").serialize(),
+				type : 'post',
+				dataType : 'json',
+				success : function(data) {
+					if (data.success) {
+						$("#addto").modal('hide');
+						alert('创建成功');
+						block.bootstrapTable('refresh');
+					} else {
+						alert(data.msg);
+					}
+				}
+			});
+			}
+		});
+		/*  $("#Formto").validate({
+		 	rules : {
+				role : {
+					required : true
+				},
+				teambean : {
+					required : true
+				}
+
+			},
+			messages : {
+				role : {
+					required : "必填项"
+				},
+				teambean : {
+					required : "必填项"
+				}
+			},
+			errorClass : "help-inline",
+			errorElement : "span",
+			highlight : function(element, errorClass, validClass) {
+				$(element).parents('.form-group').removeClass('success');
+				$(element).parents('.form-group').addClass('error');
+			},
+			unhighlight : function(element, errorClass, validClass) {
+				$(element).parents('.form-group').removeClass('error');
+				$(element).parents('.form-group').addClass('success');
+			},
+			submitHandler : function(form) {
+				alert(111);
+				$.ajax({
+
+					url : '/team/create/adduserexperience',
+					data : $("#Formto").serialize(),
+					type : 'post',
+					dataType : 'json',
+					success : function(data) {
+						if (data.success) {
+							$("#addto").modal('hide');
+							alert('创建成功');
+							block.bootstrapTable('refresh');
+						} else {
+							alert(data.msg);
+						}
+					}
+				});
+			}
+			});  */
+
+
+			$("#updateTeam").validate({
+
+				rules : {
+					name : {
+						required : true
+					},
+					post : {
+						required : true
+					},
+					brief : {
+						required : true
+					},
+					description : {
+						required : true
+					}
+				},
+				messages : {
+					name : {
+						required : "必填项"
+					},
+					post : {
+						required : "必填项"
+					},
+					brief : {
+						required : "必填项"
+					},
+					description : {
+						required : "必填项"
+					}
+				},
+				errorClass : "help-inline",
+				errorElement : "span",
+				highlight : function(element, errorClass, validClass) {
+					$(element).parents('.form-group').removeClass('success');
+					$(element).parents('.form-group').addClass('error');
+				},
+				unhighlight : function(element, errorClass, validClass) {
+					$(element).parents('.form-group').removeClass('error');
+					$(element).parents('.form-group').addClass('success');
+				},
+				submitHandler : function(form) {
+					$.ajax({
+
+						url : '/team/updateTeam',
+						data : $("#updateTeam").serialize(),
+						type : 'post',
+						dataType : 'json',
+						success : function(data) {
+							if (data.success) {
+								$("#updateTeams").modal('hide');
+								alert('修改成功');
+								teambeanListTable.bootstrapTable('refresh');
+							} else {
+								alert(data.msg);
+							}
+						}
+					});
+				}
+			});
+
+
+		$("#add_Form").validate({
+
+			rules : {
+				school : {
+					required : true
+				},
+				course : {
+					required : true
+				},
+				levelText : {
+					required : true
+				},
+				sdate:{
+					required : true
+				},
+				edate:{
+					required : true
+				}
+			},
+			messages : {
+				school : {
+					required : "必填项"
+				},
+				course : {
+					required : "必填项"
+				},
+				levelText : {
+					required : "必填项"
+				},
+				sdate:{
+					required : "必填项"
+				},
+				edate:{
+					required : "必填项"
+				}
+			},
+			errorClass : "help-inline",
+			errorElement : "span",
+			highlight : function(element, errorClass, validClass) {
+				$(element).parents('.form-group').removeClass('success');
+				$(element).parents('.form-group').addClass('error');
+			},
+			unhighlight : function(element, errorClass, validClass) {
+				$(element).parents('.form-group').removeClass('error');
+				$(element).parents('.form-group').addClass('success');
+			},
+			submitHandler : function(form) {
+				$.ajax({
+
+					url : '/team/create',
+					data : $("#add_Form").serialize(),
+					type : 'post',
+					dataType : 'json',
+					success : function(data) {
+						if (data.success) {
+							$("#add").modal('hide');
+							alert('创建成功');
+							block.bootstrapTable('refresh');
+						} else {
+							alert(data.msg);
+						}
+					}
+				});
+			}
+		});
+
+		//封装查询参数
+		function search(params) {
+			params.companyId = $("#teambeanId").val();
+			return params;
+		};
+
+		function search1(params) {
+			params.userId = userid;
+			return params;
+		};
+		function search2(params) {
+			params.userId = userid;
+			return params;
+		};
+		var teambeanListTable;
+
+		var edu = {
+			init : function() {
+				teambean.bind();
+
+			},
+			bind : function() {
+
+				//绑定搜索
+				$("#search").click(function() {
+					block.bootstrapTable('refresh');
+				});
+			},
+
+		}
+		var teambean = {
+			init : function() {
+				teambean.bind();
+				teambean.keyCode();
+				teambean.initDatetimepicker();
+			},
+			bind : function() {
+				//绑定表格
+				teambeanListTable = $("#edu_list_table").bootstrapTable();
+
+				//绑定搜索
+				$("#search").click(function() {
+					teambeanListTable.bootstrapTable('refresh');
+				});
+			},
+			//初始化插件
+			initDatetimepicker : function() {
+				var d = new Date();
+				d.setDate(d.getDate());
+				//时间插件
+				$('.start').datetimepicker({
+					language : 'zh-CN',
+					weekStart : 1,
+					todayBtn : 1,
+					autoclose : true,
+					todayHighlight : 1,
+					startView : 2,
+					minView : 2,
+					forceParse : 0,
+					endDate : d.Format("yyyy-MM-dd")
+				});
+				$('.end').datetimepicker({
+					language : 'zh-CN',
+					weekStart : 1,
+					todayBtn : 1,
+					autoclose : true,
+					todayHighlight : 1,
+					startView : 2,
+					minView : 2,
+					forceParse : 0
+				});
+				//重置日期
+				$(".glyphicon-remove").click(
+						function() {
+							var datepickerId = $(this).parents(".form_date")
+									.attr("id");
+							$("#" + datepickerId).datetimepicker('reset');
+						});
+
+			},
+			keyCode : function() {
+				$(document).keyup(function(event) {
+					if (event.keyCode == 13) {
+						$("#edu_list_table").bootstrapTable({
+							url : "team/query"
+						});
+						teambeanListTable.bootstrapTable('refresh');
+					}
+				});
+			}
+
+		}
+
+		function updateDate(value, logo, index) {
+			var format = "yyyy-MM-dd HH:mm:ss";
+			var t = new Date(row.createDate);
+			var tf = function(i) {
+				return (i < 10 ? '0' : '') + i
+			};
+			return format.replace(/yyyy|MM|dd|HH|mm|ss/g, function(a) {
+				switch (a) {
+				case 'yyyy':
+					return tf(t.getFullYear());
+					break;
+				case 'MM':
+					return tf(t.getMonth() + 1);
+					break;
+				case 'mm':
+					return tf(t.getMinutes());
+					break;
+				case 'dd':
+					return tf(t.getDate());
+					break;
+				case 'HH':
+					return tf(t.getHours());
+					break;
+				case 'ss':
+					return tf(t.getSeconds());
+					break;
+				}
+			})
+		}
+		$("#teambeanId").change(function(){
+			teambeanListTable.bootstrapTable('refresh');
+		});
+		//头像格式化
+		function operateIcon(value, row, index) {
+			return [ '<img src="'+row.logo+'" style="width:70px;height:70px;">' ]
+		}
+
+		$(document).ready(function() {
+							teambean.init();
+
+							$("#space_select").change(
+											function() {
+												$("#block_div").empty();
+												$.ajax({
+															url : 'term/get-blocks',
+															type : "post",
+															data : {
+																spaceId : $(this).val()
+															},
+															dateType : 'json',
+															success : function(data) {
+																if (data.success) {
+																	if (data.blocks.length > 0) {
+																		for (var i = 0; i < data.blocks.length; i++) {
+																			$("#block_div").append("<input type='checkbox' name='block' value="+data.blocks[i]+">"
+																									+ data.blocks[i]+ "&nbsp;&nbsp;");
+																		}
+																	}
+
+																} else {
+																	alert(
+																			"系统异常！",
+																			"error");
+																}
+															},
+															error : function(
+																	XMLHttpRequest,
+																	status) {
+																if (status == 'timeout') {
+																	alert(
+																			"连接超时！",
+																			"error");
+																} else {
+																	alert(
+																			"系统异常！",
+																			"error");
+																}
+															}
+														});
+
+											});
+						});
+	</script>
+</body>
+</html>

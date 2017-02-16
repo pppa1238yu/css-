@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue/dist/vue.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script>
+    <style>
+        .fade-enter {
+            transform: translateX(10px);
+            opacity: 0;
+        }
+
+        .fade-enter-active {
+            transition: all .3s ease;
+        }
+
+        .fade-leave {
+            transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        }
+
+        .fade-leave-active {
+            transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+            transform: translateX(10px);
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 测试响应式开发 -->
+    <div id="response">
+        <example></example>
+    </div>
+    <!-- 测试过渡transation用法 -->
+    <div id="demo">
+
+        <button @click="show = !show">
+      Toggle
+    </button>
+        <transition name="fade">
+            <p v-if="show">Hello World!</p>
+        </transition>
+    </div>
+
+
+    <!-- 测试input的range类型 -->
+    <div id="range">
+        <input type="range" @mousemove="show()" v-model="showVal">
+    </div>
+
+    <script type="text/javascript">
+        /*
+         * 名称：Vue组件开发栏
+         * 功能：用于存放Vue开发组件
+         * 开发人:郭咸君
+         * 开发时间：2017年1月20日10:30:47
+         * 修改人：郭咸君
+         * 修改时间：2017年1月20日10:30:57
+         */
+        Vue.component('example', {
+            template: `<div><span>{{message}}</span> <button @click = "updateMessage()">123123</button></div>`,
+            data: function() {
+                return {
+                    message: 'not updated'
+                }
+            },
+            methods: {
+                updateMessage: function() {
+                    this.message = 'updated';
+                    console.log(this.$el.textContent);
+                    this.$nextTick(function() {
+                        console.log(this.$el.textContent);
+                    })
+                }
+            }
+        })
+
+        /*
+         * 名称：Vue事件绑定
+         * 功能：用于绑定Vue事件
+         * 开发人:郭咸君
+         * 开发时间：2017年1月20日10:30:47
+         * 修改人：郭咸君
+         * 修改时间：2017年1月20日10:30:57
+         */
+        var transationApp = new Vue({
+            el: "#demo",
+            data: {
+                show: true
+            }
+        })
+
+        var range = new Vue({
+            el: "#range",
+            data: {
+                showVal: "",
+                docState:"saved"
+            },
+            methods: {
+                show: function() {
+                    console.log(this.showVal);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
